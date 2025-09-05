@@ -62,7 +62,7 @@ public class OrangeHRMTest {
     }
 
     @Test
-    @Order(2)
+    @Order( 1 )
     @DisplayName("login")
     void loginUser(){
         for (Page page : pages) {
@@ -75,74 +75,34 @@ public class OrangeHRMTest {
             page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Username")).fill("Admin");
             page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Username")).press("Tab");
             page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Password")).fill("admin123");
-            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Password")).press("Enter");
-
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login")).click();
         }
     }
 
     @Test
-    @Order(2)
-    @DisplayName("Bajar Documento")
-    void bajarDocumento() {
+    @Order( 2)
+    @DisplayName("Dashboard")
+    void verifyLogin(){
         for (Page page : pages) {
-            page.navigate("https://adazzle.github.io/react-data-grid/?utm_source=chatgpt.com#/CommonFeatures");
+            page.navigate("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login");
+            assertThat(page.getByRole(AriaRole.IMG, new Page.GetByRoleOptions().setName("company-branding"))).isVisible();
 
-            Download download = page.waitForDownload(() -> {
-                page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Export to CSV")).click();
-            });
-            download.saveAs(Paths.get("C:\\Users\\facun\\Downloads", download.suggestedFilename()));
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Username")).press("CapsLock");
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Username")).fill("A");
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Username")).press("CapsLock");
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Username")).fill("Admin");
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Username")).press("Tab");
+            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Password")).fill("admin123");
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Login")).click();
+            assertThat(page.getByRole(AriaRole.NAVIGATION, new Page.GetByRoleOptions().setName("Sidepanel"))).isVisible();
+
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("")).click();
+            assertThat(page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("client brand logo"))).isVisible();
+
+            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("")).click();
         }
     }
 
-    @Test
-    @Order(3)
-    @DisplayName("Encontrar primer elemento")
-    void encontrarPrimerElemento() {
-        for (Page page : pages) {
-            page.navigate("https://adazzle.github.io/react-data-grid/?utm_source=chatgpt.com#/CommonFeatures");
-            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Header Filters")).click();
-            assertThat(page.locator(".rdg-row.r1upfr80.rdg-row-even .rdg-cell.cj343x0").nth(2)).isVisible();
-            assertThat(page.locator(".rdg-row.r1upfr80.rdg-row-even .rdg-cell.cj343x0").nth(2)).containsText("Critical");
-        }
-    }
-
-    @Test
-    @Order(4)
-    @DisplayName("Escribir y esperar evento")
-    void escribirYEsperarEvento() {
-        for (Page page : pages) {
-            page.navigate("http://www.uitestingplayground.com/");
-            page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Text Input")).click();
-            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Set New Button Name")).click();
-            page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Set New Button Name")).fill("hola");
-            page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Button That Should Change it'")).click();
-            assertThat(page.locator("#updatingButton")).containsText("hola");
-            assertThat(page.getByLabel("Subscribe to newsletter")).isChecked();
-
-
-        }
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("API status")
-    void apiStatusTest() {
-        for (Page page : pages) {
-            APIResponse response = apiContext.get("https://demoqa.com/bad-request");
-            assertEquals(200, response.status(), "El GET no devolvió 200 OK");
-        }
-    }
-
-    @Test
-    @Order(6)
-    @DisplayName("Entrar a url")
-    void entrarUrl() {
-        for (Page page : pages) {
-            page.navigate("https://demoqa.com/");
-            page.locator("div").filter(new Locator.FilterOptions().setHasText(Pattern.compile("^Forms$"))).nth(2).click();
-            assertThat(page).hasURL("https://demoqa.com/forms");
-        }
-    }
 
     @AfterAll
     void tearDown() {
